@@ -6,6 +6,7 @@ import BaseStat from "./components/BaseStat";
 
 class App extends React.Component {
   state = {
+    pokemon: undefined,
     link: undefined,
     name: undefined,
     id: undefined,
@@ -21,52 +22,56 @@ class App extends React.Component {
     error: undefined
   };
 
-  // function called when user clicks on Get pokemon info 
+  // function called when user clicks on Get pokemon info
   getPokemon = async e => {
     e.preventDefault();
-    const nameID = e.target.elements.name.value;
+    // const nameID = e.target.elements.name.value;
+    const nameID = document.getElementById("nameID").value;
 
-    // GET request that gets pokemon json
     const api_call = await fetch(
       `https://pokeapi.co/api/v2/pokemon/${nameID}/`
     );
 
-    const data = await api_call.json(); // data = json object
-    console.log(data);
-    const PokeName = data.name;
-    let PicLink;
-    let type2Set;
-    PicLink = `http://www.pokestadium.com/sprites/xy/${PokeName}.gif`;
+    try {
+      const pokemon = await api_call.json(); // data = json object
+      console.log(pokemon);
+      const PokeName = pokemon.name;
+      let PicLink;
+      let type2Set;
+      PicLink = `http://www.pokestadium.com/sprites/xy/${PokeName}.gif`;
 
-    if (data.types.length === 2) {
-      type2Set = data.types[1].type.name;
-    }
+      if (pokemon.types.length === 2) {
+        type2Set = pokemon.types[1].type.name;
+      }
 
-    if (nameID) {
-      this.setState({
-        link: `https://pokeapi.co/api/v2/pokemon/${nameID}/`,
-        name: data.name,
-        id: data.id,
-        picture: PicLink,
-        type1: data.types[0].type.name,
-        type2: type2Set,
-        speed: data.stats[0].base_stat,
-        specialdefense: data.stats[1].base_stat,
-        specialattack: data.stats[2].base_stat,
-        defense: data.stats[3].base_stat,
-        attack: data.stats[4].base_stat,
-        hp: data.stats[5].base_stat1,
-        error: ""
-      });
-    } else {
-      this.setState({
-        name: undefined,
-        id: undefined,
-        picture: undefined,
-        type1: undefined,
-        type2: undefined,
-        error: "Enter a valid name or ID"
-      });
+      if (nameID) {
+        this.setState({
+          link: `https://pokeapi.co/api/v2/pokemon/${nameID}/`,
+          name: pokemon.name,
+          id: pokemon.id,
+          picture: PicLink,
+          type1: pokemon.types[0].type.name,
+          type2: type2Set,
+          speed: pokemon.stats[0].base_stat,
+          specialdefense: pokemon.stats[1].base_stat,
+          specialattack: pokemon.stats[2].base_stat,
+          defense: pokemon.stats[3].base_stat,
+          attack: pokemon.stats[4].base_stat,
+          hp: pokemon.stats[5].base_stat1,
+          error: ""
+        });
+      } else {
+        this.setState({
+          name: undefined,
+          id: undefined,
+          picture: undefined,
+          type1: undefined,
+          type2: undefined,
+          error: "Enter a valid name or ID"
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
