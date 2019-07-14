@@ -1,38 +1,30 @@
-import React from "react"
+import React from "react";
 //import BasicInfo from "./PokeComp/BasicInfo";
 import BaseStat from "./PokeComp/BaseStat";
 
-
 const Pokemon = props => (
+  <div>
+    {props.name && props.picture && (
+      <div>
+        <h1>Basic Info</h1>
 
+        <img src={props.picture} alt="null" />
 
-	<div>
+        <p>Name: {props.name}</p>
 
-		{
-			props.name && props.picture &&
+        <p>ID: {props.id}</p>
 
-			<div>
+        {props.type1 && !props.type2 && <p>Type: {props.type1}</p>}
 
-				<h1>Basic Info</h1> 
-
-				<img src={props.picture} alt="null"/>  
-
-				<p>Name: {props.name}</p>
-
-				<p>ID: {props.id}</p>
-
-				{props.type1 && !props.type2 && <p>Type: {props.type1}</p>}
-
-				{props.type1 && props.type2 && <p>Type: {props.type1} & {props.type2}</p>}
-
-				
-
-			</div>
-		}
-
-	</div>
+        {props.type1 && props.type2 && (
+          <p>
+            Type: {props.type1} & {props.type2}
+          </p>
+        )}
+      </div>
+    )}
+  </div>
 );
-
 
 /*class Pokemon extends React.Component {
 
@@ -51,8 +43,7 @@ const Pokemon = props => (
 	    error: undefined
 	}*/
 
-	
-	/*getData = async(e) => {
+/*getData = async(e) => {
 		e.preventDefault();
 		console.log(this.props.link);
 	}
