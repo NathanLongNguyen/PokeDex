@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "@material-ui/core/Button";
 
 const Forms = props => (
 
@@ -8,7 +9,7 @@ const Forms = props => (
 
 		<input type="text" autoComplete="off" name="name" placeholder="Name/ID..."/>
 
-		<button>Get Pokemon Info</button>
+		<Button>Get Pokemon Info</Button>
 
 	</form>
 
