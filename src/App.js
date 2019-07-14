@@ -3,15 +3,16 @@ import Titles from "./components/Titles";
 import Forms from "./components/Forms";
 import Pokemon from "./components/Pokemon";
 import BaseStat from "./components/BaseStat";
-import PokemonPaper from "./components/PokemonPaper";
+import Evolution from "./components/Evolution";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { sizing } from "@material-ui/system";
-import { Container, Divider } from "@material-ui/core";
+import { Container, Divider, Button } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import axios from "axios";
 
 class App extends React.Component {
   state = {
-    pokemon: undefined,
     link: undefined,
     name: undefined,
     id: undefined,
@@ -27,66 +28,97 @@ class App extends React.Component {
     error: undefined
   };
 
+  // Sets all state in app
+  setAllState = async nameID => {
+    const pokemonData = await this.getPokemonByNameID(nameID);
+    const pictureLink = this.getPicturelink(pokemonData.name);
+    let type2Set = undefined;
+
+    if (pokemonData.types.length === 2) {
+      type2Set = pokemonData.types[1].type.name;
+    }
+
+    if (nameID) {
+      this.setState({
+        link: `https://pokeapi.co/api/v2/pokemon/${nameID}/`,
+        name: pokemonData.name,
+        id: pokemonData.id,
+        picture: pictureLink,
+        type1: pokemonData.types[0].type.name,
+        type2: type2Set,
+        speed: pokemonData.stats[0].base_stat,
+        specialdefense: pokemonData.stats[1].base_stat,
+        specialattack: pokemonData.stats[2].base_stat,
+        defense: pokemonData.stats[3].base_stat,
+        attack: pokemonData.stats[4].base_stat,
+        hp: pokemonData.stats[5].base_stat1,
+        error: ""
+      });
+    } else {
+      this.setState({
+        name: undefined,
+        id: undefined,
+        picture: undefined,
+        type1: undefined,
+        type2: undefined,
+        error: "Enter a valid name or ID"
+      });
+    }
+  };
+
+  getPokemonByNameID = nameID => {
+    return axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${nameID}/`)
+      .then(pokemon => pokemon.data)
+      .catch(error => error);
+  };
+
+  getPicturelink = pokemonName => {
+    return `http://www.pokestadium.com/sprites/xy/${pokemonName}.gif`;
+  };
+
+  getSpeciesData = pokemonSpecies => {
+    return axios
+      .get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonSpecies}`)
+      .then(specie => specie.data)
+      .catch(error => error);
+  };
+
+  getEvolutionChainData = evolutionChainURL => {
+    return axios
+      .get(evolutionChainURL)
+      .then(evolution => evolution.data)
+      .catch(error => error);
+  };
+
   // function called when user clicks on Get pokemon info
   getPokemon = async e => {
     e.preventDefault();
-    // const nameID = e.target.elements.name.value;
-    const nameID = document.getElementById("nameID").value;
+    let nameID = document.getElementById("nameID").value;
+
+    if (typeof nameID === "string") {
+      nameID = nameID.toLowerCase();
+    }
 
     try {
-      const api_call = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${nameID}/`
-      );
-      const pokemon = await api_call.json(); // data = json object
-      console.log(pokemon);
-      const PokeName = pokemon.name;
-      let PicLink;
-      let type2Set;
-      PicLink = `http://www.pokestadium.com/sprites/xy/${PokeName}.gif`;
+      // Gets pokemon data
+      const pokemonData = await this.getPokemonByNameID(nameID);
+      const pokemonName = pokemonData.name;
+      const pictureLink = this.getPicturelink(pokemonName);
+      console.log(pokemonData);
 
-      //Testing on grabbing the proper evolution chain
-      //Grabbing the pokemon species
-      const PokeSpecies = pokemon.species.name;
-      const api_call_species = await fetch(
-        `https://pokeapi.co/api/v2/pokemon-species/${PokeSpecies}`
-      );
-      const species_data = await api_call_species.json();
-      console.log(species_data);
-      const evoleChainURL = species_data.evolution_chain.url;
-      const api_call_evolution = await fetch(evoleChainURL);
-      const evoleData = await api_call_evolution.json();
-      console.log(evoleData);
+      // Gets species data
+      const pokeSpecies = pokemonData.species.name;
+      const speciesData = await this.getSpeciesData(pokeSpecies);
+      console.log(speciesData);
 
-      if (pokemon.types.length === 2) {
-        type2Set = pokemon.types[1].type.name;
-      }
+      // Get Evolution chain data
+      const evolutionChainURL = speciesData.evolution_chain.url;
+      const evolutionData = await this.getEvolutionChainData(evolutionChainURL);
+      console.log(evolutionData);
 
-      if (nameID) {
-        this.setState({
-          link: `https://pokeapi.co/api/v2/pokemon/${nameID}/`,
-          name: pokemon.name,
-          id: pokemon.id,
-          picture: PicLink,
-          type1: pokemon.types[0].type.name,
-          type2: type2Set,
-          speed: pokemon.stats[0].base_stat,
-          specialdefense: pokemon.stats[1].base_stat,
-          specialattack: pokemon.stats[2].base_stat,
-          defense: pokemon.stats[3].base_stat,
-          attack: pokemon.stats[4].base_stat,
-          hp: pokemon.stats[5].base_stat1,
-          error: ""
-        });
-      } else {
-        this.setState({
-          name: undefined,
-          id: undefined,
-          picture: undefined,
-          type1: undefined,
-          type2: undefined,
-          error: "Enter a valid name or ID"
-        });
-      }
+      // Set state of pokemon
+      this.setAllState(nameID);
     } catch (error) {
       console.log(error);
     }
@@ -94,48 +126,44 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <Container maxWidth="sm">
-          <center>
-            <Titles />
+      <Container maxWidth="sm">
+        <center>
+          <Titles />
 
-            <Forms getPokemon={this.getPokemon} />
+          <Forms getPokemon={this.getPokemon} />
 
-            {/* <PokemonCard
-            link={this.state.link}
-            name={this.state.name}
-            id={this.state.id}
-            picture={this.state.picture}
-            type1={this.state.type1}
-            type2={this.state.type2}
-            speed={this.state.speed}
-            error={this.state.error}
-          /> */}
-
+          {/* TODO: fix rendering */}
+          {this.state.name && (
             <Paper elevation={10} square={false}>
-              <Pokemon
-                link={this.state.link}
-                name={this.state.name}
-                id={this.state.id}
-                picture={this.state.picture}
-                type1={this.state.type1}
-                type2={this.state.type2}
-                speed={this.state.speed}
-                error={this.state.error}
-              />
-
-              <BaseStat
-                speed={this.state.speed}
-                specialdefense={this.state.specialdefense}
-                specialattack={this.state.specialattack}
-                defense={this.state.defense}
-                attack={this.state.attack}
-                hp={this.state.hp}
-              />
+              <Grid container justify="center" spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Pokemon
+                    link={this.state.link}
+                    name={this.state.name}
+                    id={this.state.id}
+                    picture={this.state.picture}
+                    type1={this.state.type1}
+                    type2={this.state.type2}
+                    speed={this.state.speed}
+                    error={this.state.error}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <BaseStat
+                    speed={this.state.speed}
+                    specialdefense={this.state.specialdefense}
+                    specialattack={this.state.specialattack}
+                    defense={this.state.defense}
+                    attack={this.state.attack}
+                    hp={this.state.hp}
+                  />
+                  <Evolution />
+                </Grid>
+              </Grid>
             </Paper>
-          </center>
-        </Container>
-      </div>
+          )}
+        </center>
+      </Container>
     );
   }
 }

@@ -32,7 +32,7 @@ const Forms = props => {
     <form className={classes.container} onSubmit={props.getPokemon}>
       <TextField
         id="nameID"
-        // label="Type in the Pokemon's name or ID below"
+        // label="Type in the Pokemon's name or ID below" 
         // InputLabelProps={{ shrink: true }}
         name="name"
         placeholder="Name/ID..."

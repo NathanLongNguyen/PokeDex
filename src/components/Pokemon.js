@@ -1,4 +1,6 @@
 import React from "react";
+import Typography from "@material-ui/core/Typography";
+import "typeface-roboto";
 
 const Pokemon = props => {
   const { name, picture, id, type1, type2 } = props;
@@ -17,11 +19,12 @@ const Pokemon = props => {
           <p>ID: {id}</p>
 
           {hasTwoTypes() ? (
-            <p>Type: {type1} & {type2}</p>
+            <p>
+              Type: {type1} & {type2}
+            </p>
           ) : (
             <p>Type: {type1}</p>
-					)}
-					
+          )}
         </div>
       )}
     </div>
