@@ -3,6 +3,11 @@ import Titles from "./components/Titles";
 import Forms from "./components/Forms";
 import Pokemon from "./components/Pokemon";
 import BaseStat from "./components/BaseStat";
+import PokemonPaper from "./components/PokemonPaper";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import { sizing } from "@material-ui/system";
+import { Container, Divider } from "@material-ui/core";
 
 class App extends React.Component {
   state = {
@@ -28,17 +33,29 @@ class App extends React.Component {
     // const nameID = e.target.elements.name.value;
     const nameID = document.getElementById("nameID").value;
 
-    const api_call = await fetch(
-      `https://pokeapi.co/api/v2/pokemon/${nameID}/`
-    );
-
     try {
+      const api_call = await fetch(
+        `https://pokeapi.co/api/v2/pokemon/${nameID}/`
+      );
       const pokemon = await api_call.json(); // data = json object
       console.log(pokemon);
       const PokeName = pokemon.name;
       let PicLink;
       let type2Set;
       PicLink = `http://www.pokestadium.com/sprites/xy/${PokeName}.gif`;
+
+      //Testing on grabbing the proper evolution chain
+      //Grabbing the pokemon species
+      const PokeSpecies = pokemon.species.name;
+      const api_call_species = await fetch(
+        `https://pokeapi.co/api/v2/pokemon-species/${PokeSpecies}`
+      );
+      const species_data = await api_call_species.json();
+      console.log(species_data);
+      const evoleChainURL = species_data.evolution_chain.url;
+      const api_call_evolution = await fetch(evoleChainURL);
+      const evoleData = await api_call_evolution.json();
+      console.log(evoleData);
 
       if (pokemon.types.length === 2) {
         type2Set = pokemon.types[1].type.name;
@@ -78,12 +95,13 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <center>
-          <Titles />
+        <Container maxWidth="sm">
+          <center>
+            <Titles />
 
-          <Forms getPokemon={this.getPokemon} />
+            <Forms getPokemon={this.getPokemon} />
 
-          <Pokemon
+            {/* <PokemonCard
             link={this.state.link}
             name={this.state.name}
             id={this.state.id}
@@ -92,17 +110,31 @@ class App extends React.Component {
             type2={this.state.type2}
             speed={this.state.speed}
             error={this.state.error}
-          />
+          /> */}
 
-          <BaseStat
-            speed={this.state.speed}
-            specialdefense={this.state.specialdefense}
-            specialattack={this.state.specialattack}
-            defense={this.state.defense}
-            attack={this.state.attack}
-            hp={this.state.hp}
-          />
-        </center>
+            <Paper elevation={10} square={false}>
+              <Pokemon
+                link={this.state.link}
+                name={this.state.name}
+                id={this.state.id}
+                picture={this.state.picture}
+                type1={this.state.type1}
+                type2={this.state.type2}
+                speed={this.state.speed}
+                error={this.state.error}
+              />
+
+              <BaseStat
+                speed={this.state.speed}
+                specialdefense={this.state.specialdefense}
+                specialattack={this.state.specialattack}
+                defense={this.state.defense}
+                attack={this.state.attack}
+                hp={this.state.hp}
+              />
+            </Paper>
+          </center>
+        </Container>
       </div>
     );
   }

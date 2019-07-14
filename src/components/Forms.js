@@ -7,18 +7,21 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "baseline"
   },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 200
+    width: "60%"
   },
   dense: {
     marginTop: 19
   },
   menu: {
     width: 200
+  },
+  button: {
+    // TODO
   }
 }));
 
@@ -27,30 +30,25 @@ const Forms = props => {
 
   return (
     <form className={classes.container} onSubmit={props.getPokemon}>
-      {/* <p>Type in the Pokemon's name or ID below.</p> */}
-
-      {/* <input
-        type="text"
-        autoComplete="off"
-        name="name"
-        placeholder="Name/ID..."
-      /> */}
-
-      {/* <FormGroup row> */}
       <TextField
         id="nameID"
-        label="Name/ID..."
-        name="name"      
+        // label="Type in the Pokemon's name or ID below"
+        // InputLabelProps={{ shrink: true }}
+        name="name"
+        placeholder="Name/ID..."
         className={classes.textField}
+        variant="outlined"
         margin="normal"
       />
 
-      <div>
-        <Button variant="contained" color="primary" onClick={props.getPokemon}>
-          Get Pokemon Info
-        </Button>
-      </div>
-      {/* </FormGroup> */}
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="primary"
+        onClick={props.getPokemon}
+      >
+        Get Pokemon Info
+      </Button>
     </form>
   );
 };
