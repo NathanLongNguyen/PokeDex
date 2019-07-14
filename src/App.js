@@ -28,17 +28,11 @@ class App extends React.Component {
     const api_call = await fetch(`https://pokeapi.co/api/v2/pokemon/${nameID}/`);
     const data = await api_call.json();
     console.log(data);
-    const idNum = data.id;
+    const PokeName = data.name;
     let PicLink;
     let type2Set;
-
+    PicLink = `http://www.pokestadium.com/sprites/xy/${PokeName}.gif`;
     //Set the src base on the id
-    if(idNum < 10)
-      PicLink = `https://sprites.pokecheck.org/i/00${idNum}.gif`;
-    else if(idNum >= 10 && idNum < 100)
-      PicLink = `https://sprites.pokecheck.org/i/0${idNum}.gif`;
-    else
-      PicLink = `https://sprites.pokecheck.org/i/${idNum}.gif`;
 
     if(data.types.length === 2)
       type2Set = data.types[1].type.name;
