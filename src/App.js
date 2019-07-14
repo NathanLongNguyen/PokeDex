@@ -5,7 +5,6 @@ import Pokemon from "./components/Pokemon";
 import BaseStat from "./components/BaseStat";
 
 class App extends React.Component {
-
   state = {
     link: undefined,
     name: undefined,
@@ -20,29 +19,33 @@ class App extends React.Component {
     attack: undefined,
     hp: undefined,
     error: undefined
-  }
+  };
 
-  getPokemon = async (e) => {
+  // function called when user clicks on Get pokemon info 
+  getPokemon = async e => {
     e.preventDefault();
     const nameID = e.target.elements.name.value;
-    const api_call = await fetch(`https://pokeapi.co/api/v2/pokemon/${nameID}/`);
-    const data = await api_call.json();
+
+    // GET request that gets pokemon json
+    const api_call = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/${nameID}/`
+    );
+
+    const data = await api_call.json(); // data = json object
     console.log(data);
     const PokeName = data.name;
     let PicLink;
     let type2Set;
     PicLink = `http://www.pokestadium.com/sprites/xy/${PokeName}.gif`;
-    //Set the src base on the id
 
-    if(data.types.length === 2)
+    if (data.types.length === 2) {
       type2Set = data.types[1].type.name;
-    else
-      type2Set = undefined;
+    }
 
-    if(nameID){
+    if (nameID) {
       this.setState({
         link: `https://pokeapi.co/api/v2/pokemon/${nameID}/`,
-        name: data.name, 
+        name: data.name,
         id: data.id,
         picture: PicLink,
         type1: data.types[0].type.name,
@@ -65,43 +68,39 @@ class App extends React.Component {
         error: "Enter a valid name or ID"
       });
     }
-  }
-
+  };
 
   render() {
-
-    return(
-
+    return (
       <div>
         <center>
-          <Titles/>
+          <Titles />
 
-          <Forms getPokemon={this.getPokemon}/>
+          <Forms getPokemon={this.getPokemon} />
 
-          <Pokemon link={this.state.link} 
-              name={this.state.name}
-              id={this.state.id}
-              picture={this.state.picture}
-              type1={this.state.type1}
-              type2={this.state.type2}
-              speed={this.state.speed}
-              error={this.state.error}
+          <Pokemon
+            link={this.state.link}
+            name={this.state.name}
+            id={this.state.id}
+            picture={this.state.picture}
+            type1={this.state.type1}
+            type2={this.state.type2}
+            speed={this.state.speed}
+            error={this.state.error}
           />
 
-          <BaseStat speed={this.state.speed}
-              specialdefense={this.state.specialdefense}
-              specialattack={this.state.specialattack}
-              defense={this.state.defense}
-              attack={this.state.attack}
-              hp={this.state.hp}
+          <BaseStat
+            speed={this.state.speed}
+            specialdefense={this.state.specialdefense}
+            specialattack={this.state.specialattack}
+            defense={this.state.defense}
+            attack={this.state.attack}
+            hp={this.state.hp}
           />
-
         </center>
       </div>
-
-      );
-
+    );
   }
-};
+}
 
 export default App;
