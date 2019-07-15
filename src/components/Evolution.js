@@ -8,10 +8,16 @@ const Evolution = props => {
   printAllEvolutions();
 
   function printAllEvolutions(){
-    let currentChain = evoultionData.evolves_to.length;
+    let currentChain = evoultionData.evolves_to;
     let currentSpecies = evoultionData.species.name;
-    if(currentChain === 0) console.log(`${currentSpecies} does not have an evolution chain`);
-    console.log(currentChain);
+    if(currentChain.length === 0) console.log(`${currentSpecies} does not have an evolution chain`);
+    while(currentChain.length !== 0){
+      console.log(currentSpecies);
+      console.log("evolves to")
+      currentSpecies = currentChain[0].species.name;
+      currentChain = currentChain[0].evolves_to;
+    }
+    console.log(currentSpecies); 
   }
   
   return (
