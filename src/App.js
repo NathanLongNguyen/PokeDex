@@ -25,13 +25,28 @@ class App extends React.Component {
     defense: undefined,
     attack: undefined,
     hp: undefined,
-    error: undefined
+    error: undefined,
+    data: undefined,
+    evolutionData: undefined
   };
 
   // Sets all state in app
   setAllState = async nameID => {
+    // Gets pokemon data
     const pokemonData = await this.getPokemonByNameID(nameID);
-    const pictureLink = this.getPicturelink(pokemonData.name);
+    const pokemonName = pokemonData.name;
+    const pictureLink = this.getPicturelink(pokemonName);
+    
+    // Gets species data
+    const pokeSpecies = pokemonData.species.name;
+    const speciesData = await this.getSpeciesData(pokeSpecies);
+
+    // Get Evolution chain data
+    const evolutionChainURL = speciesData.evolution_chain.url;
+    let evolutionData = await this.getEvolutionChainData(evolutionChainURL);
+    evolutionData = evolutionData.chain;
+    console.log(evolutionData);
+
     let type2Set = undefined;
 
     if (pokemonData.types.length === 2) {
@@ -52,7 +67,9 @@ class App extends React.Component {
         defense: pokemonData.stats[3].base_stat,
         attack: pokemonData.stats[4].base_stat,
         hp: pokemonData.stats[5].base_stat1,
-        error: ""
+        error: "",
+        data: pokemonData,
+        eData: evolutionData
       });
     } else {
       this.setState({
@@ -101,23 +118,6 @@ class App extends React.Component {
     }
 
     try {
-      // Gets pokemon data
-      const pokemonData = await this.getPokemonByNameID(nameID);
-      const pokemonName = pokemonData.name;
-      const pictureLink = this.getPicturelink(pokemonName);
-      console.log(pokemonData);
-
-      // Gets species data
-      const pokeSpecies = pokemonData.species.name;
-      const speciesData = await this.getSpeciesData(pokeSpecies);
-      console.log(speciesData);
-
-      // Get Evolution chain data
-      const evolutionChainURL = speciesData.evolution_chain.url;
-      const evolutionData = await this.getEvolutionChainData(evolutionChainURL);
-      console.log(evolutionData);
-
-      // Set state of pokemon
       this.setAllState(nameID);
     } catch (error) {
       console.log(error);
@@ -138,14 +138,8 @@ class App extends React.Component {
               <Grid container justify="center" spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <Pokemon
-                    link={this.state.link}
-                    name={this.state.name}
-                    id={this.state.id}
                     picture={this.state.picture}
-                    type1={this.state.type1}
-                    type2={this.state.type2}
-                    speed={this.state.speed}
-                    error={this.state.error}
+                    data={this.state.data}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -157,7 +151,9 @@ class App extends React.Component {
                     attack={this.state.attack}
                     hp={this.state.hp}
                   />
-                  <Evolution />
+                  <Evolution 
+                    eData={this.state.eData}
+                  />
                 </Grid>
               </Grid>
             </Paper>
