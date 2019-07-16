@@ -5,15 +5,17 @@ import { Button } from "@material-ui/core";
 const Evolution = props => {
   const {eData} = props;
   const evoultionData = eData;
-  printAllEvolutions();
+  let currentChain = evoultionData.evolves_to;
+  let currentSpecies = evoultionData.species.name;
+  
+  if(currentChain.length === 0) console.log(`${currentSpecies} does not have an evolution chain`);
+  else printEvolutionChain();
 
-  function printAllEvolutions(){
-    let currentChain = evoultionData.evolves_to;
-    let currentSpecies = evoultionData.species.name;
-    if(currentChain.length === 0) console.log(`${currentSpecies} does not have an evolution chain`);
+  function printEvolutionChain() {
     while(currentChain.length !== 0){
-      console.log(currentSpecies);
-      console.log("evolves to")
+      let minLvl = currentChain[0].evolution_details[0].min_level;
+      console.log(`${currentSpecies} at lvl ${minLvl}`);
+      console.log("evolves to"); 
       currentSpecies = currentChain[0].species.name;
       currentChain = currentChain[0].evolves_to;
     }
