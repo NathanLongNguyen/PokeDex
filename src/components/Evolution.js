@@ -11,6 +11,10 @@ const Evolution = props => {
   if(currentChain.length === 0) console.log(`${currentSpecies} does not have an evolution chain`);
   else printEvolutionChain();
 
+  //prints evolution chain into the console
+  //EDGE CASES: 
+  //1. what if a pokemon doesn't evolve by lvl
+  //2. what if a pokemon have multiple evolution routes.
   function printEvolutionChain() {
     while(currentChain.length !== 0){
       let minLvl = currentChain[0].evolution_details[0].min_level;
@@ -22,6 +26,8 @@ const Evolution = props => {
     console.log(currentSpecies); 
   }
   
+  //TODO: Make a viewable evolution chain 
+
   return (
     <Button color="primary">Get Evolution</Button>   
   );
