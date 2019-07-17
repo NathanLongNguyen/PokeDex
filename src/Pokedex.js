@@ -11,7 +11,7 @@ import { Container, Divider, Button } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import axios from "axios";
 
-class App extends React.Component {
+class Pokedex extends React.Component {
   state = {
     link: undefined,
     name: undefined,
@@ -126,7 +126,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" className="Pokedex">
         <center>
           <Titles />
 
@@ -135,7 +135,7 @@ class App extends React.Component {
           {/* TODO: fix rendering */}
           {this.state.name && (
             <Paper elevation={10} square={false}>
-              <Grid container justify="center" spacing={2}>
+              <Grid container justify="center" spacing={50}>
                 <Grid item xs={12} sm={6}>
                   <Pokemon
                     picture={this.state.picture}
@@ -164,4 +164,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default Pokedex;

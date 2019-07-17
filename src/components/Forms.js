@@ -36,6 +36,7 @@ const Forms = props => {
         // InputLabelProps={{ shrink: true }}
         name="name"
         placeholder="Name/ID..."
+        autoComplete="off"
         className={classes.textField}
         variant="outlined"
         margin="normal"
